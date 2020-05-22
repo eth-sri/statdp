@@ -69,7 +69,10 @@ def hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, iterations, proce
         else mp.cpu_count()
     process_iterations = [int(math.floor(float(iterations) / core_count)) for _ in range(core_count)]
     # add the remaining iterations to the last index
-    process_iterations[core_count - 1] += iterations % process_iterations[core_count - 1]
+    if iterations < core_count:
+        process_iterations[core_count - 1] = iterations
+    else:
+        process_iterations[core_count - 1] += iterations % process_iterations[core_count - 1]
 
     # start the pool to run the algorithm and collects the statistics
     cx, cy = 0, 0

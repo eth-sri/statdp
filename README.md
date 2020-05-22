@@ -1,3 +1,9 @@
+# StatDP Fork
+
+This is a fork of StatDP (https://github.com/cmla-psu/statdp), based on commit hash `16f389baf41b047dc6e70c334a8c49a7e00b5b7c` (state of 2020-05-14). Unfortunately, the developers of StatDP overwrite the git commit history for each release.
+
+The original README file can be found below.
+
 # StatDP 
 [![Github Actions](https://github.com/yxwangcs/statdp/workflows/build/badge.svg)](https://github.com/yxwangcs/statdp/actions?workflow=build) [![codecov](https://codecov.io/gh/yxwangcs/statdp/branch/master/graph/badge.svg)](https://codecov.io/gh/yxwangcs/statdp)
 
@@ -12,15 +18,15 @@ Then you can simply call the detection tool with automatic database generation a
 ```python
 from statdp import detect_counterexample
 
-def your_algorithm(prng, queries, epsilon, ...):
+def your_algorithm(prng, queries, epsilon):
     # your algorithm implementation here
     # prng must be used instead of np.random
-    prng.laplace(loc=0, scale=1 / epsilon)
+    return prng.laplace(loc=queries[0], scale=1 / epsilon)
  
 if __name__ == '__main__':
     # algorithm privacy budget argument(`epsilon`) is needed
     # otherwise detector won't work properly since it will try to generate a privacy budget
-    result = detect_counterexample(your_algorithm, {'epsilon': privacy_budget}, test_epsilon)
+    result = detect_counterexample(your_algorithm, 0.05, {'epsilon': 0.1}, num_input=1)
 ```
 
 The result is returned in variable `result`, which is stored as `[(epsilon, p, d1, d2, kwargs, event), (...)]`. 
@@ -54,12 +60,12 @@ However, for the best performance we recommend installing `statdp` in a `conda` 
 
 ```bash
 # we use python 3.8, but 3.6 and above should work fine
-conda create -n statdp anaconda python=3.8
+conda create -y -n statdp python=3.8
 conda activate statdp
 # install dependencies from conda for best performance
-conda install numpy numba matplotlib sympy tqdm coloredlogs pip
+conda install -y numpy numba matplotlib sympy tqdm coloredlogs pip
 # install icc_rt compiler for best performance with numba, this requires using intel's channel
-conda install -c intel icc_rt
+conda install -y -c intel icc_rt
 # install the remaining non-conda dependencies and statdp 
 pip install .
 ```
